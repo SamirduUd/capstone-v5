@@ -7,7 +7,7 @@ pipeline {
     dockerImage = ''
     def kubClusterName = 'kubClusterForCapstoneProject'
     def kubClusterConfig = 'deployApp-params.yml'
-    aws-region = 'us-east-2'
+    awsregion = 'us-east-2'
     //awsCredentials = 'aws-key'
   }
 
