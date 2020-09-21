@@ -42,8 +42,8 @@ metadata:
               cpu: "800m"
             requests:
               cpu: "100m"
-        ports:
-        - containerPort: 8090
+          ports:
+          - containerPort: 8090
 
         - name: my-web-app
           image: 8if8troin6i4rv2p/capstone-v5
