@@ -5,9 +5,9 @@ pipeline {
     registry = '8if8troin6i4rv2p/capstone-v5'
     dockerCredential = 'dockerhub-user'
     dockerImage = ''
-    def kubClusterName = 'kubClusterForCapstoneProject'
-    def kubClusterConfig = 'deployApp-params.yml'
-    awsregion = 'us-east-2'
+    def kubClusterName = 'cpastone-kub-cluster'
+    def kubClusterConfig = 'deployApp-blue-params.yml'
+    awsRegion = 'us-east-2'
     //awsCredentials = 'aws-key'
   }
 
@@ -47,9 +47,9 @@ pipeline {
     stage('Deploy into AWS Kub Cluster') {
       steps{
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-          AWS("--region=us-east-2 eks update-kubeconfig --name kubClusterForCapstoneProject")
-          AWS("--region=us-east-2 kubectl apply -f deployApp-blue-params.yml")
-          AWS("--region=us-east-2 kubectl get deployments")
+          AWS("--region=${awsRegion} eks update-kubeconfig --name ${kubClusterName}")
+          AWS("--region=${awsRegion} kubectl apply -f ${kubClusterConfig}")
+          AWS("--region=${awsRegion} kubectl get deployments")
           }
       }
     }
