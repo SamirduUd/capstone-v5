@@ -1,0 +1,20 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: capstone-kub-cluster
+  region: es-east-2
+
+nodeGroups:
+  - name: node1
+    instanceType: t3.large
+    desiredCapacity: 2
+    volumeSize: 80
+    ssh:
+      allow: true 
+  - name: node2
+    instanceType: t3.large
+    desiredCapacity: 2
+    volumeSize: 80
+    ssh:
+      allow: true
