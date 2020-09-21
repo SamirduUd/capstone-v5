@@ -24,7 +24,7 @@ spec:
             httpGet:
               path: /
               port: 9080
-        - name: myWebApp
+        - name: my-web-app
           image: 8if8troin6i4rv2p/capstone-v5
           imagePullPolicy: "Always"
           ports:
