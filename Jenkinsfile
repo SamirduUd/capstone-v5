@@ -15,7 +15,7 @@ pipeline {
   stages {
     stage('Cloning Capstone Project from Github') {
       steps {
-        git 'https://github.com/SamirduUd/capstone-v4.git'
+        git 'https://github.com/SamirduUd/capstone-v5.git'
       }
     }
     
@@ -46,7 +46,11 @@ pipeline {
 
     stage('Deploy into AWS Kub Cluster') {
       steps{
-        sh 'pwd'
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+          AWS("--region=${awsRegion} eks update-kubeconfig --name ${kubClusterName}")
+          AWS("--region=${awsRegion} kubectl apply -f ${kubClusterConfig}")
+          AWS("--region=${awsRegion} kubectl get deployments")
+          }
       }
     }
 
