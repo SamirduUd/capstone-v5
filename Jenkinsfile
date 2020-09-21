@@ -46,7 +46,7 @@ pipeline {
 
     stage('Deploy into AWS Kub Cluster') {
       steps{
-        sh 'ls'
+        sh 'pwd'
       }
     }
 
