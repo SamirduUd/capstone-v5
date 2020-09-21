@@ -18,7 +18,6 @@ pipeline {
         git 'https://github.com/SamirduUd/capstone-v4.git'
       }
     }
-  }
     
   stage('Lint HTML') {
       steps {
@@ -46,15 +45,12 @@ pipeline {
     }
 
     stage('Deploy into AWS Kub Cluster') {
-              steps{
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                  AWS("--region=us-east-2 eks update-kubeconfig --name kubClusterForCapstoneProject")
-                  AWS("--region=us-east-2 kubectl apply -f deployApp-blue-params.yml")
-                  AWS("--region=us-east-2 kubectl get deployments")
-                  }
-              }
-        }
-
-
-  }
+      steps{
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+          AWS("--region=us-east-2 eks update-kubeconfig --name kubClusterForCapstoneProject")
+          AWS("--region=us-east-2 kubectl apply -f deployApp-blue-params.yml")
+          AWS("--region=us-east-2 kubectl get deployments")
+          }
+      }
+    }
 }
