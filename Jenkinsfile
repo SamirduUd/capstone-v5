@@ -46,11 +46,7 @@ pipeline {
 
     stage('Deploy into AWS Kub Cluster') {
       steps{
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-          AWS("--region=${awsRegion} eks update-kubeconfig --name ${kubClusterName}")
-          AWS("--region=${awsRegion} kubectl apply -f ${kubClusterConfig}")
-          AWS("--region=${awsRegion} kubectl get deployments")
-          }
+        sh 'pwd'
       }
     }
 
