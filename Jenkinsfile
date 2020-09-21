@@ -2,9 +2,12 @@
 
 pipeline {
   environment {
-    registry = '8if8troin6i4rv2p/capstone-v3'
+    registry = '8if8troin6i4rv2p/capstone-v5'
     dockerCredential = 'dockerhub-user'
     dockerImage = ''
+    def kubClusterName = 'kubClusterForCapstoneProject'
+    def kubClusterConfig = 'deployApp-params.yml'
+    aws-region = 'us-east-2'
     //awsCredentials = 'aws-key'
   }
 
@@ -13,6 +16,14 @@ pipeline {
     stage('Cloning Capstone Project from Github') {
       steps {
         git 'https://github.com/SamirduUd/capstone-v4.git'
+      }
+    }
+    
+    stage('Create kub Cluster') {
+      steps {
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]){
+        AWS("--region=us-east-2 eksctl create cluster --name ${kubClusterName} --nodegroup-name myNodes --node-type t2.medium --nodes 2 --nodes-min 1 --nodes-max 2 --node-ami auto --region aws-region")
+        }
       }
     }
 
@@ -42,36 +53,16 @@ pipeline {
       }
     }
 
-    stage('Create App network in AWS') {
-      steps {
-        //withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]){
-        //AWS("--region=us-east-2 cloudformation create-stack --stack-name CreateNetwork --template-body file://network.yml --parameters file://network-params.json --capabilities CAPABILITY_NAMED_IAM")
-        sh "ls"
-        //}
-      }
-    }
-
-    stage('Create Blue EC2 Machines') {
-      steps {
-        //withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-        //AWS("--region=us-east-2 cloudformation create-stack --stack-name CreateBlueHosts --template-body file://blue-servers.yml --parameters file://blue-servers-params.json --capabilities CAPABILITY_NAMED_IAM")
-        sh "ls"
-        //}
-      }
-    }
-
-    stage('Create Green EC2 Machines') {
-      steps {
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-        AWS("--region=us-east-2 cloudformation create-stack --stack-name CreateGreenHosts --template-body file://green-servers.yml --parameters file://green-servers-params.json --capabilities CAPABILITY_NAMED_IAM")
+    stage('Deploy to Kub Cluster') {
+              steps{
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                  AWS("--region=us-east-2 eks update-kubeconfig --name ${kubClusterForCapstoneProject}")
+                  AWS("--region=us-east-2 kubectl apply -f ${kubClusterConfig}")
+                  AWS("--region=us-east-2 kubectl get deployments")
+                  }
+              }
         }
-      }
-    }
 
-    stage('Deploy App on Blue') {
-      steps {
-        sh "ls"
-      }
-    }
+
   }
 }
