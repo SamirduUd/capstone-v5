@@ -5,9 +5,16 @@ metadata:
   namespace: my-namespace
   labels:
     app: my-web-app
+  
+  limits:
+    - max:
+        cpu: "800m"
+      min:
+        cpu: "200m"
+      type: Container  
 
     spec:
-      replicas: 3
+      replicas: 2
       selector:
         matchLabels:
           app: my-app
@@ -29,10 +36,14 @@ metadata:
 
       containers:
         - name: nginx
-        image: nginx:1.19.2
+          image: nginx:1.19.2
+          resources:
+            limits:
+              cpu: "800m"
+            requests:
+              cpu: "100m"
         ports:
         - containerPort: 8090
-
 
         - name: my-web-app
           image: 8if8troin6i4rv2p/capstone-v5
