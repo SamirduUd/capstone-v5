@@ -19,15 +19,7 @@ pipeline {
       }
     }
     
-    stage('Create kub Cluster') {
-      steps {
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]){
-        AWS("--region=us-east-2 eksctl create cluster --name ${kubClusterName} --nodegroup-name myNodes --node-type t2.medium --nodes 2 --nodes-min 1 --nodes-max 2 --node-ami auto --region aws-region")
-        }
-      }
-    }
-
-    stage('Lint HTML') {
+  stage('Lint HTML') {
       steps {
         sh 'tidy -q -e index.html'
       }
