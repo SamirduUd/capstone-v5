@@ -6,13 +6,6 @@ metadata:
   labels:
     app: my-web-app
   
-  limits:
-    - max:
-        cpu: "800m"
-      min:
-        cpu: "200m"
-      type: Container  
-
     spec:
       replicas: 2
       selector:
@@ -22,6 +15,13 @@ metadata:
         metadata:
           labels:
             app: my-app
+      limits:
+        - max:
+            cpu: "800m"
+          min:
+            cpu: "200m"
+      type: Container 
+
     spec:
       affinity:
         nodeAffinity:
