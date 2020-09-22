@@ -5,22 +5,13 @@ metadata:
   name: capstone-kub-cluster
   region: us-east-2
 
-vpc:
-  subnets:
-    private:
-      us-east-2a: { id: subnet-033644b252521aac8 }
-      us-east-2b: { id: subnet-06a67e7dc11739bca }
-
 nodeGroups:
-  - name: ng-1-workers
-    labels: { role: workers }
+  - name: node1
     instanceType: t3.large
     desiredCapacity: 2
-    
-  - name: ng-2-builders
-    labels: { role: builders }
+    volumeSize: 80
+
+  - name: node2
     instanceType: t3.large
     desiredCapacity: 2
-    iam:
-      withAddonPolicies:
-        imageBuilder: true
+    volumeSize: 80

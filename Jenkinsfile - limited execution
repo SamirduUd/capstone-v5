@@ -7,7 +7,7 @@ pipeline {
     dockerImage = ''
     def kubClusterName = 'capastone-kub-cluster'
     def kubClusterParams = 'create-kub-cluster-params.yml'
-    def appConfig = 'deployApp-blue-params.yml'
+    def kubClusterConfig = 'deployApp-blue-params.yml'
     awsRegion = 'us-east-2'
   }
 
@@ -51,12 +51,7 @@ pipeline {
 
     stage('Deploy into AWS Kub Cluster') {
       steps{
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]){
-        AWS("--region=us-east-2 aws eks update-kubeconfig --name ${kubClusterName}")
-
-        AWS("--region=us-east-2 kubectl apply -f ${appConfig}")
-
-        AWS("kubectl rollout status deployment.apps/deploy-blue")        
+        sh 'pwd'
       }
     }
 
