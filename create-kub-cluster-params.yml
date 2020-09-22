@@ -10,11 +10,8 @@ nodeGroups:
     instanceType: t3.large
     desiredCapacity: 2
     volumeSize: 80
-    ssh:
-      allow: true 
+
   - name: node2
     instanceType: t3.large
     desiredCapacity: 2
     volumeSize: 80
-    ssh:
-      allow: true
