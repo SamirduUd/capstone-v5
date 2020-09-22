@@ -3,7 +3,7 @@ kind: ClusterConfig
 
 metadata:
   name: capstone-kub-cluster
-  region: es-east-2
+  region: us-east-2
 
 nodeGroups:
   - name: node1
