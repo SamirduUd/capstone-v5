@@ -21,7 +21,7 @@ pipeline {
 
     stage('Create Kubernetes EKS Cluster') {
       steps {
-        sh 'ls'
+        sh 'eksctl create cluster -f ${kubClusterParams}'
       }
     }
   
@@ -51,7 +51,12 @@ pipeline {
 
     stage('Deploy into AWS Kub Cluster') {
       steps{
-        sh 'ls'     
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws-key', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]){
+        AWS("--region=us-east-2 aws eks update-kubeconfig --name ${kubClusterName}")
+
+        AWS("--region=us-east-2 kubectl apply -f ${appConfig}")
+
+        AWS("kubectl rollout status deployment.apps/deploy-blue")        
       }
     }
 
