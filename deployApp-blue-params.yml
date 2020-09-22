@@ -1,53 +1,51 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deploy-blue
-  namespace: my-namespace
-  labels:
-    app: my-web-app
-  
+  name: nginx-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nginx
     spec:
-      replicas: 2
-      selector:
-        matchLabels:
-          app: my-app
-      template:
-        metadata:
-          labels:
-            app: my-app
-      limits:
-        - max:
-            cpu: "800m"
-          min:
-            cpu: "200m"
-      type: Container 
-
-    spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: beta.kubernetes.io/arch
-                operator: In
-                values:
-                - amd64
-                - arm64
-
       containers:
-        - name: nginx
-          image: nginx:1.19.2
-          resources:
-            limits:
-              cpu: "800m"
-            requests:
-              cpu: "100m"
-          ports:
-          - containerPort: 8090
+      - name: nginx
+        image: nginx:1.14.2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        
+      - name: my-web-app
+        image: 8if8troin6i4rv2p/capstone-v5
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+            
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  type: ClusterIP
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
 
-        - name: my-web-app
-          image: 8if8troin6i4rv2p/capstone-v5
-          imagePullPolicy: "Always"
-          ports:
-            - containerPort: 80
-          
+kind: Service
+metadata:
+  name: my-web-service
+spec:
+  type: ClusterIP
+  selector:
+    app: my-web-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
